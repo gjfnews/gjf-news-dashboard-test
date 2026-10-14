@@ -2,307 +2,761 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>경기도일자리재단 뉴스 대시보드</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>GJF NEWS | 언론 모니터링</title>
 
-<style>
-* {
-  box-sizing: border-box;
-}
+  <style>
+    :root {
+      --blue: #1769ff;
+      --blue-soft: #edf4ff;
+      --text: #191f28;
+      --sub: #6b7684;
+      --line: #e9edf2;
+      --bg: #f7f9fc;
+      --white: #ffffff;
+    }
 
-body {
-  font-family: Arial, "Malgun Gothic", sans-serif;
-  background: #f3f5f8;
-  margin: 0;
-  padding: 24px;
-  color: #222;
-}
+    * { box-sizing: border-box; }
 
-.container {
-  max-width: 1000px;
-  margin: auto;
-}
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Noto Sans KR", sans-serif;
+      letter-spacing: -0.3px;
+    }
 
-h1 {
-  color: #17365d;
-  line-height: 1.4;
-}
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
 
-.panel {
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  margin-top: 20px;
-  box-shadow: 0 2px 8px #0000000a;
-}
+    .topbar {
+      background: white;
+      border-bottom: 1px solid var(--line);
+    }
 
-input, select, button {
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 15px;
-}
+    .topbar-inner {
+      max-width: 1120px;
+      margin: auto;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-input {
-  width: 55%;
-  max-width: 100%;
-}
+    .logo {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      color: white;
+      background: var(--blue);
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 850;
+    }
 
-button {
-  background: #17365d;
-  color: white;
-  cursor: pointer;
-  margin: 3px;
-}
+    .brand-title { font-size: 19px; font-weight: 800; }
+    .brand-sub { margin-top: 4px; color: var(--sub); font-size: 12px; }
 
-button:disabled {
-  opacity: .6;
-  cursor: wait;
-}
+    .main {
+      max-width: 1120px;
+      margin: auto;
+      padding: 42px 24px 64px;
+    }
 
-.news {
-  padding: 18px 0;
-  border-bottom: 1px solid #e5e7eb;
-}
+    .eyebrow {
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 750;
+      margin-bottom: 12px;
+    }
 
-.news:last-child {
-  border-bottom: none;
-}
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 38px);
+      line-height: 1.35;
+      letter-spacing: -1.5px;
+    }
 
-.news a {
-  color: #17365d;
-  font-size: 17px;
-  font-weight: bold;
-  text-decoration: none;
-}
+    .intro {
+      margin: 12px 0 30px;
+      color: var(--sub);
+      font-size: 15px;
+      line-height: 1.8;
+    }
 
-.news a:hover {
-  text-decoration: underline;
-}
+    .panel {
+      padding: 24px;
+      margin-bottom: 20px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: 0 5px 20px rgba(30,55,90,.025);
+    }
 
-.description {
-  line-height: 1.7;
-  margin: 8px 0;
-  overflow-wrap: anywhere;
-}
+    .search-row { display: flex; gap: 10px; }
 
-.meta {
-  color: #777;
-  font-size: 13px;
-}
+    .search-box {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 16px;
+      border: 1px solid #dfe5ed;
+      border-radius: 14px;
+      background: white;
+    }
 
-#status {
-  margin-top: 16px;
-  line-height: 1.6;
-}
+    .search-box:focus-within {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(23,105,255,.09);
+    }
 
-@media(max-width:600px) {
-  body {
-    padding: 12px;
-  }
+    .search-icon { color: var(--sub); font-size: 22px; }
 
-  .panel {
-    padding: 16px;
-  }
+    .search-box input {
+      width: 100%;
+      min-width: 0;
+      height: 54px;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      font-size: 15px;
+      color: var(--text);
+    }
 
-  input, select {
-    width: 100%;
-    margin-bottom: 8px;
-  }
+    .primary-btn {
+      min-height: 54px;
+      padding: 0 25px;
+      border: 0;
+      border-radius: 14px;
+      background: var(--blue);
+      color: white;
+      font-weight: 750;
+    }
 
-  #searchButton {
-    width: 100%;
-  }
-}
-</style>
+    .primary-btn:hover { background: #0757e8; }
+    .primary-btn:disabled { opacity: .55; cursor: wait; }
+
+    .filter-heading {
+      margin: 25px 0 14px;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px 24px;
+      padding-top: 23px;
+      border-top: 1px solid var(--line);
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 10px;
+      color: #4e5968;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .field select, .field input {
+      width: 100%;
+      height: 46px;
+      padding: 0 13px;
+      border: 1px solid #e1e6ed;
+      border-radius: 12px;
+      outline: none;
+      background: white;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .field select:focus, .field input:focus {
+      border-color: var(--blue);
+    }
+
+    .hint {
+      margin-top: 7px;
+      color: #8b95a1;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .filter-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 22px;
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      margin: 34px 0 16px;
+    }
+
+    .result-title {
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: -.8px;
+    }
+
+    .result-count { color: var(--blue); }
+
+    .result-sub {
+      margin-top: 7px;
+      color: var(--sub);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .status {
+      margin-bottom: 14px;
+      padding: 13px 15px;
+      border-radius: 12px;
+      background: #eef4ff;
+      color: #315b9f;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .status:empty { display: none; }
+
+    .status.error {
+      background: #fff0f0;
+      color: #c33434;
+    }
+
+    .article-list { display: grid; gap: 12px; }
+
+    .article {
+      padding: 22px 24px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    .article:hover {
+      border-color: #c7d9ff;
+      box-shadow: 0 8px 22px rgba(30,55,90,.05);
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+      color: var(--sub);
+      font-size: 12px;
+    }
+
+    .media-name { color: var(--blue); font-weight: 750; }
+
+    .article-title {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.65;
+      font-weight: 750;
+      overflow-wrap: anywhere;
+    }
+
+    .article-desc {
+      margin: 10px 0 0;
+      color: #6b7684;
+      font-size: 13px;
+      line-height: 1.85;
+      overflow-wrap: anywhere;
+    }
+
+    .article-link {
+      display: inline-block;
+      margin-top: 15px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 750;
+      text-decoration: none;
+    }
+
+    .article-link:hover { text-decoration: underline; }
+
+    .empty {
+      padding: 52px 20px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      text-align: center;
+    }
+
+    .empty-icon { margin-bottom: 14px; font-size: 30px; }
+    .empty-title { font-size: 16px; font-weight: 750; }
+
+    .empty-desc {
+      margin-top: 9px;
+      color: var(--sub);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .footer {
+      margin-top: 30px;
+      color: #98a1ad;
+      font-size: 11px;
+      line-height: 1.9;
+      text-align: center;
+    }
+
+    @media (max-width: 640px) {
+      .topbar-inner { padding: 15px 18px; }
+      .main { padding: 30px 16px 48px; }
+      .panel { padding: 18px; border-radius: 18px; }
+      .search-row { flex-direction: column; }
+      .primary-btn { width: 100%; }
+      .filters { grid-template-columns: 1fr; gap: 17px; }
+      .filter-actions { margin-top: 18px; }
+      .result-title { font-size: 21px; }
+      .article { padding: 18px; }
+      .article-title { font-size: 15px; }
+      .intro { font-size: 14px; }
+    }
+  </style>
 </head>
 
 <body>
-<div class="container">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="logo">GJF</div>
+      <div>
+        <div class="brand-title">GJF NEWS</div>
+        <div class="brand-sub">경기도일자리재단 언론 모니터링</div>
+      </div>
+    </div>
+  </header>
 
-  <h1>경기도일자리재단 뉴스 대시보드</h1>
-  <p>재단 관련 언론 보도를 검색하고 관리하는 공간</p>
+  <main class="main">
+    <div class="eyebrow">NEWS MONITORING</div>
+    <h1>오늘의 언론보도</h1>
+    <p class="intro">
+      경기도일자리재단 관련 뉴스를 한눈에 확인하세요.<br>
+      검색어와 기간을 선택해 필요한 기사를 찾아볼 수 있습니다.
+    </p>
 
-  <div class="panel">
-    <h3>뉴스 검색</h3>
+    <section class="panel">
+      <form id="searchForm">
+        <div class="search-row">
+          <label class="search-box">
+            <span class="search-icon">⌕</span>
+            <input
+              id="keyword"
+              type="search"
+              placeholder="검색어를 입력하세요"
+              value="경기도일자리재단"
+              aria-label="뉴스 검색어"
+              required
+            >
+          </label>
+          <button class="primary-btn" id="searchButton" type="submit">
+            뉴스 검색
+          </button>
+        </div>
+      </form>
 
-    <input
-      id="keyword"
-      value="경기도일자리재단"
-      placeholder="검색어를 입력하세요"
-      onkeydown="if(event.key==='Enter') searchNews()"
-    >
+      <div class="filter-heading">상세 검색 설정</div>
 
-    <select id="period">
-      <option value="date">최신순</option>
-      <option value="sim">정확도순</option>
-    </select>
+      <div class="filters">
+        <div class="field">
+          <label class="field-label" for="period">검색 기간</label>
+          <select id="period">
+            <option value="1">최근 1일</option>
+            <option value="3" selected>최근 3일</option>
+            <option value="7">최근 7일</option>
+          </select>
+        </div>
 
-    <button id="searchButton" onclick="searchNews()">
-      검색
-    </button>
+        <div class="field">
+          <label class="field-label" for="sort">정렬 방식</label>
+          <select id="sort">
+            <option value="date">최신순</option>
+            <option value="sim">관련도순</option>
+          </select>
+        </div>
 
-    <div id="status">
-      검색어를 입력하고 검색을 눌러주세요.
+        <div class="field">
+          <label class="field-label" for="scope">검색 범위</label>
+          <select id="scope">
+            <option value="all">제목 + 본문 요약</option>
+            <option value="title">제목만</option>
+            <option value="content">본문 요약만</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="includeKeyword">포함 키워드</label>
+          <input
+            id="includeKeyword"
+            type="text"
+            placeholder="예: 청년, 취업"
+          >
+          <div class="hint">쉼표로 구분하면 입력 단어 중 하나 이상 포함된 기사 표시</div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="excludeKeyword">제외 키워드</label>
+          <input
+            id="excludeKeyword"
+            type="text"
+            placeholder="예: 광고, 모집 마감"
+          >
+          <div class="hint">입력한 단어가 포함된 기사는 검색 결과에서 제외</div>
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button class="primary-btn" id="applyButton" type="button">
+          검색 조건 적용
+        </button>
+      </div>
+    </section>
+
+    <div class="result-header">
+      <div>
+        <div class="result-title">
+          검색 결과 <span class="result-count" id="resultCount">0</span>
+        </div>
+        <div class="result-sub" id="resultSummary">
+          검색어와 기간을 선택한 뒤 뉴스를 검색하세요.
+        </div>
+      </div>
     </div>
 
-    <div id="result"></div>
-  </div>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
 
-  <div class="panel">
-    <h3>주요 검색 키워드</h3>
+    <section class="article-list" id="articleList">
+      <div class="empty">
+        <div class="empty-icon">⌕</div>
+        <div class="empty-title">어떤 뉴스가 궁금하신가요?</div>
+        <div class="empty-desc">검색어를 입력하고 뉴스 검색을 눌러 주세요.</div>
+      </div>
+    </section>
 
-    <button onclick="setKeyword('경기도일자리재단')">
-      경기도일자리재단
-    </button>
+    <footer class="footer">
+      경기도일자리재단 언론 모니터링 대시보드<br>
+      기사 원문 및 저작권은 각 언론사에 있습니다.
+    </footer>
+  </main>
 
-    <button onclick="setKeyword('경기도기술학교')">
-      기술학교
-    </button>
+  <script>
+    const API_URL = "https://gjf-news-api.sol-945.workers.dev";
+    const MAX_RESULTS = 10;
 
-    <button onclick="setKeyword('경기도 일자리')">
-      경기도 일자리
-    </button>
-  </div>
+    const keywordInput = document.getElementById("keyword");
+    const periodSelect = document.getElementById("period");
+    const sortSelect = document.getElementById("sort");
+    const scopeSelect = document.getElementById("scope");
+    const includeInput = document.getElementById("includeKeyword");
+    const excludeInput = document.getElementById("excludeKeyword");
+    const searchButton = document.getElementById("searchButton");
+    const applyButton = document.getElementById("applyButton");
+    const statusBox = document.getElementById("status");
+    const articleList = document.getElementById("articleList");
+    const resultCount = document.getElementById("resultCount");
+    const resultSummary = document.getElementById("resultSummary");
 
-</div>
+    let isSearching = false;
+    let lastFetchedItems = [];
+    let lastFetchedTotal = 0;
+    let lastFetchedKeyword = "";
+    let lastFetchedSort = "";
+    let lastFetchedAt = 0;
 
-<script>
-const API_URL = "https://gjf-news-api.sol-945.workers.dev";
-
-// 검색어별 기사 필터 기준
-const FILTER_RULES = [
-  {
-    keyword: "경기도일자리재단",
-    terms: ["경기도일자리재단"]
-  },
-  {
-    keyword: "경기도기술학교",
-    terms: ["경기도기술학교"]
-  },
-  {
-    keyword: "경기도 일자리",
-    terms: ["경기도 일자리"]
-  }
-];
-
-// HTML 특수문자 정리
-function cleanText(value) {
-  const textarea = document.createElement("textarea");
-  textarea.innerHTML = value || "";
-  return textarea.value
-    .replace(/<[^>]*>/g, "")
-    .replace(/&quot;|&#34;|&#x22;/gi, '"')
-    .replace(/&apos;|&#39;|&#x27;/gi, "'");
-}
-
-// 검색어에 맞는 필터 기준 찾기
-function getFilterTerms(keyword) {
-  const rule = FILTER_RULES.find(
-    item => item.keyword === keyword
-  );
-
-  // 사용자 입력 검색어는 입력한 문구를 기준으로 필터링
-  return rule ? rule.terms : [keyword];
-}
-
-async function searchNews() {
-  const keyword = document.getElementById("keyword").value.trim();
-  const sort = document.getElementById("period").value;
-  const status = document.getElementById("status");
-  const result = document.getElementById("result");
-  const button = document.getElementById("searchButton");
-
-  if (!keyword) {
-    status.textContent = "검색어를 입력해 주세요.";
-    return;
-  }
-
-  button.disabled = true;
-  status.textContent = "뉴스를 검색하고 있습니다...";
-  result.replaceChildren();
-
-  try {
-    const url = API_URL
-      + "/?keyword=" + encodeURIComponent(keyword)
-      + "&sort=" + encodeURIComponent(sort);
-
-    const response = await fetch(url);
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || "뉴스 검색에 실패했습니다.");
+    function cleanText(value) {
+      const textarea = document.createElement("textarea");
+      textarea.innerHTML = value || "";
+      return textarea.value
+        .replace(/<[^>]*>/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
     }
 
-    const items = Array.isArray(data.items) ? data.items : [];
-    const terms = getFilterTerms(keyword);
-
-    // 제목 또는 요약에 해당 검색어가 있는 기사만 표시
-    const filteredItems = items.filter(item => {
-      const title = cleanText(item.title || "");
-      const description = cleanText(item.description || "");
-      const content = title + " " + description;
-
-      return terms.some(term => content.includes(term));
-    });
-
-    if (filteredItems.length === 0) {
-      status.textContent =
-        "가져온 기사 " + items.length
-        + "건 중 검색어 '" + keyword
-        + "'가 제목이나 요약에 포함된 기사가 없습니다.";
-
-      return;
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
     }
 
-    status.textContent =
-      "가져온 기사 " + items.length
-      + "건 중 검색어 포함 기사 "
-      + filteredItems.length + "건 표시"
-      + " (전체 검색 결과 "
-      + Number(data.total || 0).toLocaleString()
-      + "건)";
+    function splitKeywords(value) {
+      return value.split(/[,，\n]/)
+        .map(word => word.trim().toLowerCase())
+        .filter(Boolean);
+    }
 
-    filteredItems.forEach(item => {
-      const article = document.createElement("div");
-      article.className = "news";
+    function getArticleDate(article) {
+      const raw = article.pubDate || article.pubdate ||
+        article.publishedAt || article.date || "";
 
-      const link = document.createElement("a");
-      link.href = item.link || item.originallink || "#";
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.textContent = cleanText(item.title || "제목 없음");
+      if (!raw) return null;
+      const timestamp = Date.parse(raw);
+      return Number.isNaN(timestamp) ? null : timestamp;
+    }
 
-      const description = document.createElement("div");
-      description.className = "description";
-      description.textContent = cleanText(item.description || "");
+    function getItems(payload) {
+      const candidates = [
+        payload?.items,
+        payload?.data?.items,
+        payload?.data?.data?.items,
+        payload?.result?.items,
+        payload?.news
+      ];
 
-      const meta = document.createElement("div");
-      meta.className = "meta";
-      meta.textContent = item.pubDate
-        ? "발행일: " + item.pubDate
-        : "";
+      return candidates.find(Array.isArray) || [];
+    }
 
-      article.append(link, description, meta);
-      result.appendChild(article);
+    function getTotal(payload, items) {
+      const values = [
+        payload?.total,
+        payload?.data?.total,
+        payload?.data?.data?.total,
+        payload?.result?.total
+      ];
+
+      for (const value of values) {
+        const number = Number(value);
+        if (Number.isFinite(number)) return number;
+      }
+
+      return items.length;
+    }
+
+    function showStatus(message, isError = false) {
+      statusBox.textContent = message;
+      statusBox.classList.toggle("error", isError);
+    }
+
+    function isSafeHttpUrl(value) {
+      try {
+        const url = new URL(value);
+        return url.protocol === "https:" || url.protocol === "http:";
+      } catch {
+        return false;
+      }
+    }
+
+    function emptyState(title, description) {
+      articleList.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">⌕</div>
+          <div class="empty-title">${escapeHTML(title)}</div>
+          <div class="empty-desc">${escapeHTML(description)}</div>
+        </div>`;
+    }
+
+    function filterArticles(items) {
+      const days = Number(periodSelect.value);
+      const scope = scopeSelect.value;
+      const includeWords = splitKeywords(includeInput.value);
+      const excludeWords = splitKeywords(excludeInput.value);
+
+      const now = Date.now();
+      const cutoff = now - days * 24 * 60 * 60 * 1000;
+
+      return items.filter(article => {
+        const title = cleanText(article.title || "");
+        const description = cleanText(
+          article.description || article.content || ""
+        );
+
+        const timestamp = getArticleDate(article);
+
+        // 날짜가 없거나 기간 밖인 기사는 기간을 확인할 수 없어 제외
+        if (timestamp === null || timestamp < cutoff || timestamp > now) {
+          return false;
+        }
+
+        let searchableText = title + " " + description;
+        if (scope === "title") searchableText = title;
+        if (scope === "content") searchableText = description;
+
+        const normalized = searchableText.toLowerCase();
+
+        if (includeWords.length &&
+            !includeWords.some(word => normalized.includes(word))) {
+          return false;
+        }
+
+        if (excludeWords.some(word => normalized.includes(word))) {
+          return false;
+        }
+
+        return true;
+      });
+    }
+
+    function renderArticles(items) {
+      resultCount.textContent = items.length;
+
+      if (!items.length) {
+        emptyState(
+          "조건에 맞는 기사가 없습니다.",
+          "기간이나 키워드 필터를 바꾸고 검색 조건 적용을 눌러 보세요."
+        );
+        return;
+      }
+
+      articleList.innerHTML = items.map(article => {
+        const title = cleanText(article.title || "제목 없음");
+        const description = cleanText(
+          article.description || article.content || ""
+        );
+        const link = article.originallink || article.link || "";
+        const media = cleanText(
+          article.publisher || article.press || article.media || ""
+        );
+        const timestamp = getArticleDate(article);
+
+        const dateLabel = timestamp
+          ? new Date(timestamp).toLocaleString("ko-KR", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false
+            })
+          : "날짜 정보 없음";
+
+        const safeLink = isSafeHttpUrl(link) ? link : "";
+
+        return `
+          <article class="article">
+            <div class="article-meta">
+              ${media
+                ? `<span class="media-name">${escapeHTML(media)}</span>
+                   <span>·</span>`
+                : ""}
+              <span>${escapeHTML(dateLabel)}</span>
+            </div>
+            <h2 class="article-title">${escapeHTML(title)}</h2>
+            ${description
+              ? `<p class="article-desc">${escapeHTML(description)}</p>`
+              : ""}
+            ${safeLink
+              ? `<a class="article-link"
+                    href="${escapeHTML(safeLink)}"
+                    target="_blank"
+                    rel="noopener noreferrer">기사 원문 보기 ↗</a>`
+              : ""}
+          </article>`;
+      }).join("");
+    }
+
+    function applyFilters() {
+      if (!lastFetchedItems.length) {
+        showStatus("먼저 뉴스 검색을 해 주세요.");
+        return;
+      }
+
+      const filtered = filterArticles(lastFetchedItems);
+      renderArticles(filtered);
+
+      resultSummary.textContent =
+        `검색어: ${lastFetchedKeyword} · ` +
+        `최근 ${periodSelect.value}일 · ` +
+        `${lastFetchedSort === "date" ? "최신순" : "관련도순"} · ` +
+        `API 수신 ${lastFetchedItems.length}건 중 ${filtered.length}건 표시`;
+
+      showStatus(
+        `API에서 받은 최대 ${MAX_RESULTS}건에 기간 및 세부 필터를 적용했습니다. ` +
+        `전체 검색 결과가 더 많더라도 나머지 기사는 표시되지 않을 수 있습니다.`
+      );
+    }
+
+    async function searchNews() {
+      if (isSearching) return;
+
+      const keyword = keywordInput.value.trim();
+
+      if (!keyword) {
+        showStatus("검색어를 입력해 주세요.", true);
+        keywordInput.focus();
+        return;
+      }
+
+      isSearching = true;
+      searchButton.disabled = true;
+      applyButton.disabled = true;
+      searchButton.textContent = "검색 중...";
+      showStatus("뉴스를 불러오고 있습니다.");
+
+      try {
+        const url = API_URL +
+          "/?keyword=" + encodeURIComponent(keyword) +
+          "&sort=" + encodeURIComponent(sortSelect.value);
+
+        const response = await fetch(url, { method: "GET" });
+
+        if (!response.ok) {
+          throw new Error("뉴스 API 응답 오류 (" + response.status + ")");
+        }
+
+        const payload = await response.json();
+        const items = getItems(payload).slice(0, MAX_RESULTS);
+
+        lastFetchedItems = items;
+        lastFetchedTotal = getTotal(payload, items);
+        lastFetchedKeyword = keyword;
+        lastFetchedSort = sortSelect.value;
+        lastFetchedAt = Date.now();
+
+        if (!items.length) {
+          renderArticles([]);
+          resultSummary.textContent = "검색 결과가 없습니다.";
+          showStatus(
+            "API 응답에서 기사 목록을 찾지 못했습니다. Worker 응답 형식을 확인해 주세요.",
+            true
+          );
+          return;
+        }
+
+        applyFilters();
+
+      } catch (error) {
+        showStatus(
+          "뉴스를 불러오지 못했습니다. 네트워크 또는 API 연결을 확인해 주세요. " +
+          error.message,
+          true
+        );
+        resultSummary.textContent = "검색에 실패했습니다.";
+        emptyState(
+          "뉴스를 불러오지 못했습니다.",
+          "잠시 후 다시 검색해 주세요. 문제가 계속되면 Worker 주소를 확인해 주세요."
+        );
+      } finally {
+        isSearching = false;
+        searchButton.disabled = false;
+        applyButton.disabled = false;
+        searchButton.textContent = "뉴스 검색";
+      }
+    }
+
+    document.getElementById("searchForm").addEventListener("submit", event => {
+      event.preventDefault();
+      searchNews();
     });
 
-  } catch (error) {
-    status.textContent =
-      "뉴스를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.";
-    console.error(error);
-
-  } finally {
-    button.disabled = false;
-  }
-}
-
-function setKeyword(keyword) {
-  document.getElementById("keyword").value = keyword;
-  searchNews();
-}
-</script>
-
+    applyButton.addEventListener("click", applyFilters);
+  </script>
 </body>
 </html>
