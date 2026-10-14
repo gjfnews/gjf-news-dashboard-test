@@ -5,8 +5,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>경기도일자리재단 뉴스 대시보드</title>
+
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: Arial, "Malgun Gothic", sans-serif;
   background: #f3f5f8;
@@ -14,8 +18,16 @@ body {
   padding: 24px;
   color: #222;
 }
-.container { max-width: 1000px; margin: auto; }
-h1 { color: #17365d; }
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+}
+
+h1 {
+  color: #17365d;
+}
+
 .panel {
   background: white;
   padding: 24px;
@@ -23,70 +35,138 @@ h1 { color: #17365d; }
   margin-top: 20px;
   box-shadow: 0 2px 8px #0000000a;
 }
+
 input, select, button {
   padding: 12px;
   border-radius: 6px;
   border: 1px solid #ccc;
   font-size: 15px;
 }
-input { width: 55%; max-width: 100%; }
+
+input {
+  width: 55%;
+  max-width: 100%;
+}
+
 button {
   background: #17365d;
   color: white;
   cursor: pointer;
   margin: 3px;
 }
-button:disabled { opacity: .6; cursor: wait; }
+
+button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
 .news {
   padding: 18px 0;
   border-bottom: 1px solid #e5e7eb;
 }
-.news:last-child { border-bottom: none; }
+
+.news:last-child {
+  border-bottom: none;
+}
+
 .news a {
   color: #17365d;
   font-size: 17px;
   font-weight: bold;
   text-decoration: none;
 }
-.news a:hover { text-decoration: underline; }
-.description { line-height: 1.7; margin: 8px 0; }
-.meta { color: #777; font-size: 13px; }
-#status { margin-top: 16px; }
+
+.news a:hover {
+  text-decoration: underline;
+}
+
+.description {
+  line-height: 1.7;
+  margin: 8px 0;
+}
+
+.meta {
+  color: #777;
+  font-size: 13px;
+}
+
+#status {
+  margin-top: 16px;
+}
+
 @media(max-width:600px) {
-  body { padding: 12px; }
-  .panel { padding: 16px; }
-  input { width: 100%; margin-bottom: 8px; }
-  select { width: 100%; margin-bottom: 8px; }
-  #searchButton { width: 100%; }
+  body {
+    padding: 12px;
+  }
+
+  .panel {
+    padding: 16px;
+  }
+
+  input, select {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  #searchButton {
+    width: 100%;
+  }
 }
 </style>
 </head>
+
 <body>
 <div class="container">
+
   <h1>경기도일자리재단 뉴스 대시보드</h1>
   <p>재단 관련 언론 보도를 검색하고 관리하는 공간</p>
 
   <div class="panel">
     <h3>뉴스 검색</h3>
-    <input id="keyword" value="경기도일자리재단"
+
+    <input
+      id="keyword"
+      value="경기도일자리재단"
       placeholder="검색어를 입력하세요"
-      onkeydown="if(event.key==='Enter') searchNews()">
+      onkeydown="if(event.key==='Enter') searchNews()"
+    >
+
     <select id="period">
       <option value="date">최신순</option>
       <option value="sim">정확도순</option>
     </select>
-    <button id="searchButton" onclick="searchNews()">검색</button>
-    <div id="status">검색어를 입력하고 검색을 눌러주세요.</div>
+
+    <button id="searchButton" onclick="searchNews()">
+      검색
+    </button>
+
+    <div id="status">
+      검색어를 입력하고 검색을 눌러주세요.
+    </div>
+
     <div id="result"></div>
   </div>
 
   <div class="panel">
     <h3>주요 검색 키워드</h3>
-    <button onclick="setKeyword('경기도일자리재단')">재단</button>
-    <button onclick="setKeyword('경기도기술학교')">기술학교</button>
-    <button onclick="setKeyword('경기도 청년 일자리')">청년 일자리</button>
-    <button onclick="setKeyword('중장년 취업')">중장년</button>
+
+    <button onclick="setKeyword('경기도일자리재단')">
+      경기도일자리재단
+    </button>
+
+    <button onclick="setKeyword('경기도기술학교')">
+      기술학교
+    </button>
+
+    <button onclick="setKeyword('경기도 청년 일자리')">
+      청년 일자리
+    </button>
+
+    <button onclick="setKeyword('중장년 취업')">
+      중장년
+    </button>
   </div>
+
 </div>
 
 <script>
@@ -109,8 +189,10 @@ async function searchNews() {
   result.replaceChildren();
 
   try {
-    const url = API_URL + "/?keyword=" + encodeURIComponent(keyword)
+    const url = API_URL
+      + "/?keyword=" + encodeURIComponent(keyword)
       + "&sort=" + encodeURIComponent(sort);
+
     const response = await fetch(url);
     const data = await response.json();
 
@@ -118,16 +200,43 @@ async function searchNews() {
       throw new Error(data.error || "뉴스 검색에 실패했습니다.");
     }
 
-    if (!Array.isArray(data.items) || data.items.length === 0) {
-      status.textContent = "검색 결과가 없습니다.";
+    // 검색 결과 중 제목 또는 요약에 재단명이 포함된 기사만 선별
+    const filteredItems = (data.items || []).filter(item => {
+      const title = (item.title || "")
+        .replace(/<[^>]*>/g, "")
+        .replace(/&amp;/g, "&")
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">");
+
+      const description = (item.description || "")
+        .replace(/<[^>]*>/g, "")
+        .replace(/&amp;/g, "&")
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">");
+
+      return (
+        title.includes("경기도일자리재단") ||
+        description.includes("경기도일자리재단")
+      );
+    });
+
+    if (filteredItems.length === 0) {
+      status.textContent =
+        "가져온 검색 결과 중 제목이나 요약에 "
+        + "'경기도일자리재단'이 포함된 기사가 없습니다.";
       return;
     }
 
     status.textContent =
-      "총 " + Number(data.total || 0).toLocaleString()
-      + "건 중 " + data.items.length + "건 표시";
+      "전체 검색 결과 " + Number(data.total || 0).toLocaleString()
+      + "건 중 재단명 포함 기사 "
+      + filteredItems.length + "건 표시";
 
-    data.items.forEach(item => {
+    filteredItems.forEach(item => {
       const article = document.createElement("div");
       article.className = "news";
 
@@ -136,14 +245,22 @@ async function searchNews() {
       link.target = "_blank";
       link.rel = "noopener noreferrer";
       link.textContent = (item.title || "제목 없음")
-        .replace(/<[^>]*>/g, "");
+        .replace(/<[^>]*>/g, "")
+        .replace(/&amp;/g, "&")
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">");
 
       const description = document.createElement("div");
       description.className = "description";
       description.textContent = (item.description || "")
         .replace(/<[^>]*>/g, "")
+        .replace(/&amp;/g, "&")
         .replace(/&quot;/g, '"')
-        .replace(/&amp;/g, "&");
+        .replace(/&#39;/g, "'")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">");
 
       const meta = document.createElement("div");
       meta.className = "meta";
@@ -154,10 +271,12 @@ async function searchNews() {
       article.append(link, description, meta);
       result.appendChild(article);
     });
+
   } catch (error) {
     status.textContent =
       "뉴스를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.";
     console.error(error);
+
   } finally {
     button.disabled = false;
   }
@@ -168,5 +287,6 @@ function setKeyword(keyword) {
   searchNews();
 }
 </script>
+
 </body>
 </html>
