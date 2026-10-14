@@ -1,9 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="경기도일자리재단 언론 모니터링 대시보드">
   <title>GJF NEWS | 언론 모니터링</title>
 
   <style>
@@ -97,6 +99,153 @@
       box-shadow: 0 5px 20px rgba(30,55,90,.025);
     }
 
+    /* 자동 뉴스 영역 */
+    .top-news-section {
+      margin-bottom: 34px;
+    }
+
+    .top-news-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 14px;
+      margin-bottom: 17px;
+    }
+
+    .top-news-title {
+      margin: 0;
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: -.8px;
+    }
+
+    .top-news-subtitle {
+      margin-top: 7px;
+      color: var(--sub);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .top-news-updated {
+      flex-shrink: 0;
+      color: #8b95a1;
+      font-size: 11px;
+      text-align: right;
+    }
+
+    .top-news-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .news-group {
+      min-width: 0;
+      padding: 20px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 5px 20px rgba(30,55,90,.025);
+    }
+
+    .news-group-heading {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 5px;
+    }
+
+    .news-group-number {
+      display: grid;
+      place-items: center;
+      width: 29px;
+      height: 29px;
+      flex-shrink: 0;
+      border-radius: 9px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .news-group-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .news-group-count {
+      margin: 0 0 16px 38px;
+      color: #8b95a1;
+      font-size: 11px;
+    }
+
+    .top-news-list {
+      display: grid;
+      gap: 0;
+    }
+
+    .top-news-item {
+      padding: 14px 0;
+      border-top: 1px solid var(--line);
+      min-width: 0;
+    }
+
+    .top-news-item:first-child {
+      border-top: 1px solid var(--line);
+    }
+
+    .top-news-article-title {
+      display: block;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.7;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+    }
+
+    .top-news-article-title:hover {
+      color: var(--blue);
+    }
+
+    .top-news-date {
+      display: block;
+      margin-top: 7px;
+      color: #929ba7;
+      font-size: 11px;
+    }
+
+    .top-news-empty {
+      padding: 17px 0;
+      border-top: 1px solid var(--line);
+      color: var(--sub);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .top-news-status {
+      margin-top: 12px;
+      color: var(--sub);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .top-news-status:empty { display: none; }
+
+    .top-news-retry {
+      margin-top: 9px;
+      padding: 7px 11px;
+      border: 1px solid #dfe5ed;
+      border-radius: 9px;
+      background: white;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* 기존 검색 영역 */
     .search-row { display: flex; gap: 10px; }
 
     .search-box {
@@ -314,6 +463,13 @@
       text-align: center;
     }
 
+    @media (max-width: 900px) {
+      .top-news-grid { grid-template-columns: 1fr; }
+      .news-group { padding: 18px 20px; }
+      .top-news-list { grid-template-columns: 1fr 1fr; column-gap: 20px; }
+      .top-news-item:nth-child(2) { border-top: 1px solid var(--line); }
+    }
+
     @media (max-width: 640px) {
       .topbar-inner { padding: 15px 18px; }
       .main { padding: 30px 16px 48px; }
@@ -326,6 +482,11 @@
       .article { padding: 18px; }
       .article-title { font-size: 15px; }
       .intro { font-size: 14px; }
+      .top-news-heading { align-items: flex-start; flex-direction: column; }
+      .top-news-title { font-size: 21px; }
+      .top-news-updated { text-align: left; }
+      .top-news-list { grid-template-columns: 1fr; }
+      .top-news-item:nth-child(2) { border-top: 0; }
     }
   </style>
 </head>
@@ -346,9 +507,65 @@
     <h1>오늘의 언론보도</h1>
     <p class="intro">
       경기도일자리재단 관련 뉴스를 한눈에 확인하세요.<br>
-      검색어와 기간을 선택하고, 검색어가 제목이나 본문 요약에 포함된 기사를 확인할 수 있습니다.
+      주요 뉴스를 확인하고 검색어와 기간을 설정해 원하는 기사를 찾아볼 수 있습니다.
     </p>
 
+    <!-- 접속 시 자동으로 불러오는 주요 뉴스 -->
+    <section class="top-news-section" aria-labelledby="topNewsTitle">
+      <div class="top-news-heading">
+        <div>
+          <h2 class="top-news-title" id="topNewsTitle">주요 뉴스 모아보기</h2>
+          <div class="top-news-subtitle">
+            재단 관련 뉴스부터 경기도 일자리 정책, 전국 고용·노동 동향까지
+          </div>
+        </div>
+        <div class="top-news-updated" id="topNewsUpdated">
+          최신 뉴스를 불러오는 중입니다.
+        </div>
+      </div>
+
+      <div class="top-news-grid" id="topNewsGrid">
+        <section class="news-group">
+          <div class="news-group-heading">
+            <span class="news-group-number">01</span>
+            <h3 class="news-group-title">재단 관련 뉴스</h3>
+          </div>
+          <p class="news-group-count">최신 기사 2건</p>
+          <div class="top-news-list">
+            <div class="top-news-empty">뉴스를 불러오고 있습니다.</div>
+          </div>
+        </section>
+
+        <section class="news-group">
+          <div class="news-group-heading">
+            <span class="news-group-number">02</span>
+            <h3 class="news-group-title">경기도 일자리 정책</h3>
+          </div>
+          <p class="news-group-count">최신 기사 2건</p>
+          <div class="top-news-list">
+            <div class="top-news-empty">뉴스를 불러오고 있습니다.</div>
+          </div>
+        </section>
+
+        <section class="news-group">
+          <div class="news-group-heading">
+            <span class="news-group-number">03</span>
+            <h3 class="news-group-title">전국 고용·노동 동향</h3>
+          </div>
+          <p class="news-group-count">최신 기사 2건</p>
+          <div class="top-news-list">
+            <div class="top-news-empty">뉴스를 불러오고 있습니다.</div>
+          </div>
+        </section>
+      </div>
+
+      <div class="top-news-status" id="topNewsStatus" role="status" aria-live="polite"></div>
+      <button class="top-news-retry" id="topNewsRetry" type="button" hidden>
+        뉴스 다시 불러오기
+      </button>
+    </section>
+
+    <!-- 기존 직접 검색 기능 -->
     <section class="panel">
       <form id="searchForm">
         <div class="field keyword-preset-field">
@@ -367,6 +584,7 @@
           </select>
           <div class="hint">목록에서 선택하거나 아래 검색창에 원하는 검색어를 직접 입력하세요.</div>
         </div>
+
         <div class="search-row">
           <label class="search-box">
             <span class="search-icon">⌕</span>
@@ -579,6 +797,125 @@
         </div>`;
     }
 
+    // 자동 뉴스 표시
+    const topNewsGrid = document.getElementById("topNewsGrid");
+    const topNewsUpdated = document.getElementById("topNewsUpdated");
+    const topNewsStatus = document.getElementById("topNewsStatus");
+    const topNewsRetry = document.getElementById("topNewsRetry");
+
+    function formatTopNewsDate(value) {
+      if (!value) return "날짜 정보 없음";
+
+      const timestamp = Date.parse(value);
+      if (Number.isNaN(timestamp)) return "날짜 정보 없음";
+
+      return new Date(timestamp).toLocaleString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      });
+    }
+
+    function renderTopNews(groups) {
+      const groupNumbers = {
+        foundation: "01",
+        gyeonggi: "02",
+        employment: "03"
+      };
+
+      topNewsGrid.innerHTML = groups.map(group => {
+        const articles = Array.isArray(group.articles)
+          ? group.articles.slice(0, 2)
+          : [];
+
+        const articleHTML = articles.length
+          ? articles.map(article => {
+              const title = cleanText(article.title || "제목 없음");
+              const link = article.originallink || article.link || "";
+              const date = formatTopNewsDate(article.pubDate);
+              const safeLink = isSafeHttpUrl(link) ? link : "";
+
+              return `
+                <article class="top-news-item">
+                  ${safeLink
+                    ? `<a class="top-news-article-title"
+                         href="${escapeHTML(safeLink)}"
+                         target="_blank"
+                         rel="noopener noreferrer">${escapeHTML(title)}</a>`
+                    : `<div class="top-news-article-title">${escapeHTML(title)}</div>`}
+                  <time class="top-news-date">${escapeHTML(date)}</time>
+                </article>`;
+            }).join("")
+          : `<div class="top-news-empty">표시할 기사가 없습니다.</div>`;
+
+        return `
+          <section class="news-group">
+            <div class="news-group-heading">
+              <span class="news-group-number">${escapeHTML(
+                groupNumbers[group.id] || "NEWS"
+              )}</span>
+              <h3 class="news-group-title">${escapeHTML(group.label || "주요 뉴스")}</h3>
+            </div>
+            <p class="news-group-count">최신 기사 ${articles.length}건</p>
+            <div class="top-news-list">${articleHTML}</div>
+          </section>`;
+      }).join("");
+    }
+
+    async function loadTopNews() {
+      topNewsRetry.hidden = true;
+      topNewsStatus.textContent = "";
+      topNewsUpdated.textContent = "최신 뉴스를 불러오는 중입니다.";
+
+      try {
+        const response = await fetch(API_URL + "/top-news", {
+          method: "GET",
+          cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error("API 응답 오류 (" + response.status + ")");
+        }
+
+        const payload = await response.json();
+
+        if (!Array.isArray(payload.groups)) {
+          throw new Error("뉴스 데이터 형식이 올바르지 않습니다.");
+        }
+
+        renderTopNews(payload.groups);
+
+        if (payload.updatedAt) {
+          topNewsUpdated.textContent =
+            "업데이트 " + formatTopNewsDate(payload.updatedAt);
+        } else {
+          topNewsUpdated.textContent = "최신 뉴스";
+        }
+
+        const totalArticles = payload.groups.reduce(
+          (sum, group) =>
+            sum + (Array.isArray(group.articles) ? group.articles.length : 0),
+          0
+        );
+
+        topNewsStatus.textContent = totalArticles
+          ? "분야별 최신 뉴스 " + totalArticles + "건을 불러왔습니다."
+          : "현재 표시할 뉴스가 없습니다.";
+
+      } catch (error) {
+        topNewsUpdated.textContent = "뉴스를 불러오지 못했습니다.";
+        topNewsStatus.textContent =
+          "자동 뉴스 연결에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+        topNewsRetry.hidden = false;
+        console.error("자동 뉴스 불러오기 오류:", error);
+      }
+    }
+
+    topNewsRetry.addEventListener("click", loadTopNews);
+
     function filterArticles(items) {
       const days = Number(periodSelect.value);
       const scope = scopeSelect.value;
@@ -596,7 +933,6 @@
 
         const timestamp = getArticleDate(article);
 
-        // 날짜가 없거나 기간 밖인 기사는 기간을 확인할 수 없어 제외
         if (timestamp === null || timestamp < cutoff || timestamp > now) {
           return false;
         }
@@ -607,13 +943,12 @@
 
         const normalized = searchableText.toLowerCase();
 
-        // 검색어가 제목/요약에 실제로 있는 기사만 표시해 무관한 결과를 줄입니다.
-        // 공백 차이를 줄여 비교합니다.
         const query = (lastFetchedKeyword || keywordInput.value)
           .trim()
           .toLowerCase()
-          .replace(/\\s+/g, "");
-        const normalizedCompact = normalized.replace(/\\s+/g, "");
+          .replace(/\s+/g, "");
+        const normalizedCompact = normalized.replace(/\s+/g, "");
+
         if (query && !normalizedCompact.includes(query)) {
           return false;
         }
@@ -792,7 +1127,9 @@
       const matchingOption = Array.from(keywordPreset.options)
         .find(option => option.value === keywordInput.value.trim());
 
-      keywordPreset.value = matchingOption ? matchingOption.value : "__custom__";
+      keywordPreset.value = matchingOption
+        ? matchingOption.value
+        : "__custom__";
     });
 
     document.getElementById("searchForm").addEventListener("submit", event => {
@@ -801,6 +1138,9 @@
     });
 
     applyButton.addEventListener("click", applyFilters);
+
+    // 홈페이지 접속 시 자동 뉴스 불러오기
+    loadTopNews();
   </script>
 </body>
 </html>
