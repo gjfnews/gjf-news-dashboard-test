@@ -26,6 +26,7 @@ body {
 
 h1 {
   color: #17365d;
+  line-height: 1.4;
 }
 
 .panel {
@@ -83,6 +84,7 @@ button:disabled {
 .description {
   line-height: 1.7;
   margin: 8px 0;
+  overflow-wrap: anywhere;
 }
 
 .meta {
@@ -92,6 +94,7 @@ button:disabled {
 
 #status {
   margin-top: 16px;
+  line-height: 1.6;
 }
 
 @media(max-width:600px) {
@@ -158,12 +161,8 @@ button:disabled {
       기술학교
     </button>
 
-    <button onclick="setKeyword('경기도 청년 일자리')">
-      청년 일자리
-    </button>
-
-    <button onclick="setKeyword('중장년 취업')">
-      중장년
+    <button onclick="setKeyword('경기도 일자리')">
+      경기도 일자리
     </button>
   </div>
 
@@ -171,6 +170,42 @@ button:disabled {
 
 <script>
 const API_URL = "https://gjf-news-api.sol-945.workers.dev";
+
+// 검색어별 기사 필터 기준
+const FILTER_RULES = [
+  {
+    keyword: "경기도일자리재단",
+    terms: ["경기도일자리재단"]
+  },
+  {
+    keyword: "경기도기술학교",
+    terms: ["경기도기술학교"]
+  },
+  {
+    keyword: "경기도 일자리",
+    terms: ["경기도 일자리"]
+  }
+];
+
+// HTML 특수문자 정리
+function cleanText(value) {
+  const textarea = document.createElement("textarea");
+  textarea.innerHTML = value || "";
+  return textarea.value
+    .replace(/<[^>]*>/g, "")
+    .replace(/&quot;|&#34;|&#x22;/gi, '"')
+    .replace(/&apos;|&#39;|&#x27;/gi, "'");
+}
+
+// 검색어에 맞는 필터 기준 찾기
+function getFilterTerms(keyword) {
+  const rule = FILTER_RULES.find(
+    item => item.keyword === keyword
+  );
+
+  // 사용자 입력 검색어는 입력한 문구를 기준으로 필터링
+  return rule ? rule.terms : [keyword];
+}
 
 async function searchNews() {
   const keyword = document.getElementById("keyword").value.trim();
@@ -200,41 +235,34 @@ async function searchNews() {
       throw new Error(data.error || "뉴스 검색에 실패했습니다.");
     }
 
-    // 검색 결과 중 제목 또는 요약에 재단명이 포함된 기사만 선별
-    const filteredItems = (data.items || []).filter(item => {
-      const title = (item.title || "")
-        .replace(/<[^>]*>/g, "")
-        .replace(/&amp;/g, "&")
-        .replace(/&quot;/g, '"')
-        .replace(/&#39;/g, "'")
-        .replace(/&lt;/g, "<")
-        .replace(/&gt;/g, ">");
+    const items = Array.isArray(data.items) ? data.items : [];
+    const terms = getFilterTerms(keyword);
 
-      const description = (item.description || "")
-        .replace(/<[^>]*>/g, "")
-        .replace(/&amp;/g, "&")
-        .replace(/&quot;/g, '"')
-        .replace(/&#39;/g, "'")
-        .replace(/&lt;/g, "<")
-        .replace(/&gt;/g, ">");
+    // 제목 또는 요약에 해당 검색어가 있는 기사만 표시
+    const filteredItems = items.filter(item => {
+      const title = cleanText(item.title || "");
+      const description = cleanText(item.description || "");
+      const content = title + " " + description;
 
-      return (
-        title.includes("경기도일자리재단") ||
-        description.includes("경기도일자리재단")
-      );
+      return terms.some(term => content.includes(term));
     });
 
     if (filteredItems.length === 0) {
       status.textContent =
-        "가져온 검색 결과 중 제목이나 요약에 "
-        + "'경기도일자리재단'이 포함된 기사가 없습니다.";
+        "가져온 기사 " + items.length
+        + "건 중 검색어 '" + keyword
+        + "'가 제목이나 요약에 포함된 기사가 없습니다.";
+
       return;
     }
 
     status.textContent =
-      "전체 검색 결과 " + Number(data.total || 0).toLocaleString()
-      + "건 중 재단명 포함 기사 "
-      + filteredItems.length + "건 표시";
+      "가져온 기사 " + items.length
+      + "건 중 검색어 포함 기사 "
+      + filteredItems.length + "건 표시"
+      + " (전체 검색 결과 "
+      + Number(data.total || 0).toLocaleString()
+      + "건)";
 
     filteredItems.forEach(item => {
       const article = document.createElement("div");
@@ -244,23 +272,11 @@ async function searchNews() {
       link.href = item.link || item.originallink || "#";
       link.target = "_blank";
       link.rel = "noopener noreferrer";
-      link.textContent = (item.title || "제목 없음")
-        .replace(/<[^>]*>/g, "")
-        .replace(/&amp;/g, "&")
-        .replace(/&quot;/g, '"')
-        .replace(/&#39;/g, "'")
-        .replace(/&lt;/g, "<")
-        .replace(/&gt;/g, ">");
+      link.textContent = cleanText(item.title || "제목 없음");
 
       const description = document.createElement("div");
       description.className = "description";
-      description.textContent = (item.description || "")
-        .replace(/<[^>]*>/g, "")
-        .replace(/&amp;/g, "&")
-        .replace(/&quot;/g, '"')
-        .replace(/&#39;/g, "'")
-        .replace(/&lt;/g, "<")
-        .replace(/&gt;/g, ">");
+      description.textContent = cleanText(item.description || "");
 
       const meta = document.createElement("div");
       meta.className = "meta";
